@@ -1,0 +1,97 @@
+#include "snake.h"
+#include <cmath>
+#include <iostream>
+
+Snake::Snake(Board *board_): grid_width(board_->width),
+        grid_height(board_->height),
+        head_x(board_->width / 2),
+        head_y(board_->height / 2) {  
+}
+
+void Snake::SetBoard(Board * board_) {
+  board = board_;
+  board->SetCellValue(static_cast<int>(grid_width/2), static_cast<int>(grid_height/2), CellContent::SnakeHead);
+}
+void Snake::Update() {
+  SDL_Point prev_cell{
+      static_cast<int>(head_x),
+      static_cast<int>(
+          head_y)};  // We first capture the head's cell before updating.
+  UpdateHead();
+  SDL_Point current_cell{
+      static_cast<int>(head_x),
+      static_cast<int>(head_y)};  // Capture the head's cell after updating.
+
+  // Update all of the body vector items if the snake head has moved to a new
+  // cell.
+  if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y) {
+    UpdateBody(current_cell, prev_cell);
+  }
+}
+
+void Snake::UpdateHead() {
+  switch (direction) {
+    case Direction::kUp:
+      head_y -= speed;
+      break;
+
+    case Direction::kDown:
+      head_y += speed;
+      break;
+
+    case Direction::kLeft:
+      head_x -= speed;
+      break;
+
+    case Direction::kRight:
+      head_x += speed;
+      break;
+  }
+
+  // Wrap the Snake around to the beginning if going off of the screen.
+  head_x = fmod(head_x + grid_width, grid_width);
+  head_y = fmod(head_y + grid_height, grid_height);
+  int new_head_board_x = static_cast<int>(head_x);
+  int new_head_board_y = static_cast<int>(head_y);
+  if (board->GetCellValue(new_head_board_x, new_head_board_y) == CellContent::SnakeBody)
+     alive = false;
+  
+  board->SetCellValue(new_head_board_y, new_head_board_y, CellContent::SnakeHead);
+}
+
+void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) {
+  // Add previous head location to vector
+  board->SetCellValue(prev_head_cell.x, prev_head_cell.y, CellContent::SnakeBody);
+  body.push_back(prev_head_cell);
+
+  if (!growing) {
+    // Remove the tail from the vector.
+    board->SetCellValue((*body.begin()).x, (*body.begin()).y, CellContent::Empty);
+    body.erase(body.begin());
+  } else {
+    growing = false;
+    size++;
+  }
+
+  // Check if the snake has died.
+  /*for (auto const &item : body) {
+    if (current_head_cell.x == item.x && current_head_cell.y == item.y) {
+      alive = false;
+    }
+  }*/
+}
+
+void Snake::GrowBody() { growing = true; }
+
+// Inefficient method to check if cell is occupied by snake.
+bool Snake::SnakeCell(int x, int y) {
+  if (x == static_cast<int>(head_x) && y == static_cast<int>(head_y)) {
+    return true;
+  }
+  for (auto const &item : body) {
+    if (x == item.x && y == item.y) {
+      return true;
+    }
+  }
+  return false;
+}
