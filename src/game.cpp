@@ -1,6 +1,8 @@
 #include "game.h"
 #include <iostream>
 #include <memory>
+#include <thread>
+#include <future>
 #include "SDL.h"
 #include "board.h"
 #include "food.h"
@@ -23,8 +25,23 @@ Game::Game(std::size_t grid_width, std::size_t grid_height) :snake(grid_width, g
   board = std::make_unique<Board>(grid_width, grid_height);
   snake.SetBoard(board.get());
   food.SetBoard(board.get());
+  food.SetExpirationTime(10);
+  std::cout << "Constructor Game" << std::endl;
   food.Place();
+
   //PlaceFood();
+}
+
+bool Game::HandleInput(Controller const &controller) {
+  bool running = true;
+  controller.HandleInput(running, snake);
+  std::cout << "In handle Input " << std::endl;
+  return running;
+}
+
+void Game::Render(Renderer *renderer) {
+  std::cout << "In Renderer " << std::endl;
+  renderer->Render(snake, food);
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -35,16 +52,20 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-
+  
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
-   
-    Update();
-    renderer.Render(snake, food.GetPoint());
-    //renderer.Render(food);
+
+    //controller.HandleInput(running, snake);
+    std::cout << "Game::Run" << std::endl;
+    
+    auto handle_input = std::async(std::launch::async, &Game::HandleInput, this, controller);
+    running = handle_input.get();
+    auto handle_update = std::async(std::launch::async, &Game::Update, this);
+    auto handle_render = std::async(std::launch::async, &Game::Render, this, &renderer);
+    
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -62,8 +83,17 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // If the time for this frame is too small (i.e. frame_duration is
     // smaller than the target ms_per_frame), delay the loop to
     // achieve the correct frame rate.
+    
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
+    }
+    
+    handle_update.get();
+    handle_render.get();
+    if (!snake.GetIsAlive()) {
+      board->Clear();     
+      renderer.GameOver(score, frame_count);
+      snake.AddLife();
     }
   }
 }
@@ -87,10 +117,14 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  if (!snake.alive) return;
-
+  std::cout << "In Update " << std::endl;
+  if (!snake.GetIsAlive()) return;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  std::cout << "Before Check Food Expired " << std::endl;
+  food.CheckExpired();
   snake.Update();
-
+  if (!snake.GetIsAlive())
+      return;
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
 
@@ -99,18 +133,23 @@ void Game::Update() {
   {
     score++;
     //PlaceFood();
-    if (food.GetFoodType() == FoodType::Poison)
+    switch(food.GetFoodType())
     {
-      snake.alive = false;
+      case Food::FoodType::Poison:
+        snake.Die();
+        break;
+      case Food::FoodType::Normal:
+        snake.GrowBody();
+        snake.IncrementSpeed(0.001);
+        food.Place();
+        break;
+      case Food::FoodType::Plus:
+        snake.GrowBody();
+        snake.IncrementSpeed(0.002);
+        food.Place();
+        break;
     }
-    else
-    {
-      /* code */   
-      food.Place();
-      // Grow snake and increase speed.
-      snake.GrowBody();
-      snake.speed += 0.001;
-    }
+    
   }
 }
 

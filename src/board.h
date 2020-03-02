@@ -6,17 +6,19 @@
 #include <vector>
 #include <mutex>
 
-enum CellContent { Unknown = -1, Empty = 0, SnakeHead = 1, SnakeBody =2, FoodKind = 3};
+
 class Board {
  public:
+    enum CellContent { Unknown = -1, Empty = 0, SnakeHead = 1, SnakeBody =2, FoodKind = 3};
     Board(std::size_t grid_width, std::size_t grid_height);
-    CellContent GetCellValue(int x, int y);
-    void SetCellValue(int x, int y, CellContent value);
+    Board::CellContent GetCellValue(int x, int y);
+    void SetCellValue(int x, int y, Board::CellContent value);
     bool IsCellValid(int x, int y);
+    void Clear();
     std::size_t width;
     std::size_t height;
  private:
-    std::vector<std::vector<CellContent> > _cells;
+    std::vector<std::vector<Board::CellContent> > _cells;
     std::mutex mtx_;
    
 };

@@ -1,0 +1,37 @@
+[
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/main.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/main.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/main.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/game.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/game.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/game.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/controller.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/controller.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/controller.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/renderer.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/renderer.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/renderer.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/snake.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snake.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snake.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/board.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/board.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/board.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/food.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/food.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/food.cpp"
+}
+]

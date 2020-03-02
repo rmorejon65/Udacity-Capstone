@@ -17,7 +17,7 @@ class Game {
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
-
+  
  private:
   Snake snake;
   Food food;
@@ -33,6 +33,10 @@ class Game {
 
   void PlaceFood();
   void Update();
+  bool HandleInput(Controller const &controller);
+  void Render(Renderer *renderer);
+  void RenderWindowTitle(Renderer);
+  
 };
 
 #endif

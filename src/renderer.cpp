@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "food.h"
 #include <iostream>
 #include <string>
 
@@ -37,25 +38,40 @@ Renderer::~Renderer() {
   SDL_DestroyWindow(sdl_window);
   SDL_Quit();
 }
-void Renderer::Render(SDL_Point const &food)
+void Renderer::Render(Food &food)
 {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
 
   // Clear screen
-  SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
-  SDL_RenderClear(sdl_renderer);
+  /*SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
+  SDL_RenderClear(sdl_renderer); */
 
   // Render food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-  block.x = food.x * block.w;
-  block.y = food.y * block.h;
+  switch(food.GetFoodType())
+  {
+    case Food::FoodType::Poison :
+          std::cout << "poison" << std::endl;
+          SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
+          break;
+    case Food::FoodType::Normal:
+          SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+          break;
+    case Food::FoodType::Plus:
+          SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0xFF, 0x00, 0xFF );
+          std::cout << "normal food " << std::endl;
+         
+  }
+  
+  SDL_Point foodPoint = food.GetPoint();
+  block.x = foodPoint.x * block.w;
+  block.y = foodPoint.y * block.h;
   SDL_RenderFillRect(sdl_renderer, &block);
-  //SDL_RenderPresent(sdl_renderer);
+  SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food) {
+void Renderer::Render(Snake const snake, Food &food) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -65,10 +81,10 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   SDL_RenderClear(sdl_renderer);
 
   // Render food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+  /*SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
   block.x = food.x * block.w;
   block.y = food.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
+  SDL_RenderFillRect(sdl_renderer, &block); */
 
   // Render snake's body
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -88,6 +104,7 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   }
   SDL_RenderFillRect(sdl_renderer, &block);
 
+  Render(food);
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
 }
@@ -96,3 +113,9 @@ void Renderer::UpdateWindowTitle(int score, int fps) {
   std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
+
+void Renderer::GameOver(int score, int fps) {
+  std::string title{"GAME OVER !!!, Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+  SDL_SetWindowTitle(sdl_window, title.c_str());
+}
+
