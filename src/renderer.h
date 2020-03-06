@@ -16,9 +16,11 @@ class Renderer {
 
   void Render(Food &food);
   
+  void Render(Snake const snake);
+
   void UpdateWindowTitle(int score, int fps);
 
-  void GameOver(int score, int fps);
+  void GameOver(int score, int remainingLifes);
  private:
   SDL_Window *sdl_window;
   SDL_Renderer *sdl_renderer;

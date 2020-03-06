@@ -1,5 +1,6 @@
 #include "controller.h"
 #include <iostream>
+#include <memory>
 #include "SDL.h"
 #include "snake.h"
 
@@ -12,31 +13,50 @@ void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
 
 void Controller::HandleInput(bool &running, Snake &snake)  const {
   SDL_Event e;
+
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
       running = false;
     } else if (e.type == SDL_KEYDOWN) {
+      
       switch (e.key.keysym.sym) {
         case SDLK_UP:
-          ChangeDirection(snake, Snake::Direction::kUp,
-                          Snake::Direction::kDown);
+/*          ChangeDirection(snake, Snake::Direction::kUp,
+                          Snake::Direction::kDown); */
+            { 
+              SnakeCommand snakeCommand_(&snake, Snake::Direction::kUp);
+              snakeCommand_.execute();
+            }
           break;
 
         case SDLK_DOWN:
-          ChangeDirection(snake, Snake::Direction::kDown,
-                          Snake::Direction::kUp);
+/*          ChangeDirection(snake, Snake::Direction::kDown,
+                          Snake::Direction::kUp); */
+            {
+            SnakeCommand snakeCommand_ (&snake, Snake::Direction::kDown);
+            snakeCommand_.execute();
+            }
           break;
 
         case SDLK_LEFT:
-          ChangeDirection(snake, Snake::Direction::kLeft,
-                          Snake::Direction::kRight);
+/*          ChangeDirection(snake, Snake::Direction::kLeft,
+                          Snake::Direction::kRight); */
+          {
+          SnakeCommand snakeCommand_(&snake, Snake::Direction::kLeft);
+          snakeCommand_.execute();
+          }
           break;
 
         case SDLK_RIGHT:
-          ChangeDirection(snake, Snake::Direction::kRight,
-                          Snake::Direction::kLeft);
+/*          ChangeDirection(snake, Snake::Direction::kRight,
+                          Snake::Direction::kLeft); */
+          {
+          SnakeCommand snakeCommand_(&snake, Snake::Direction::kRight);
+          snakeCommand_.execute();
+          }
           break;
       }
+      
     }
   }
 }

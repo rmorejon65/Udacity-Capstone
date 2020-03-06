@@ -41,9 +41,7 @@ void Food::CheckExpired(){
   millisecs_t duration( std::chrono::duration_cast<millisecs_t>(end-lastTimePlaced) ) ;
   
   int elapsedTimeSeconds = duration.count()/1000;
-  std::cout << "time elapsed (SECONDS) " << elapsedTimeSeconds << std::endl;
   if (elapsedTimeSeconds >= expirationTime) {
-    std::cout << "time elapsed (SECONDS) " << elapsedTimeSeconds << std::endl;
     lck.unlock();
     Place();
   }
@@ -62,7 +60,7 @@ void Food::Place() {
     y = random_h(engine);
     if (!board->IsCellValid(x,y))
        continue;
-    std::cout << "Placing Food " << std::endl;
+
     if (board->GetCellValue(x,y) == Board::CellContent::Empty) {
       std::cout << "Found Empty Cell For FOOD" << std::endl;
       Food::FoodType previous = foodType;

@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include "food.h"
 #include <iostream>
+#include <thread>
 #include <string>
 
 Renderer::Renderer(const std::size_t screen_width,
@@ -52,7 +53,6 @@ void Renderer::Render(Food &food)
   switch(food.GetFoodType())
   {
     case Food::FoodType::Poison :
-          std::cout << "poison" << std::endl;
           SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
           break;
     case Food::FoodType::Normal:
@@ -60,8 +60,6 @@ void Renderer::Render(Food &food)
           break;
     case Food::FoodType::Plus:
           SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0xFF, 0x00, 0xFF );
-          std::cout << "normal food " << std::endl;
-         
   }
   
   SDL_Point foodPoint = food.GetPoint();
@@ -69,6 +67,34 @@ void Renderer::Render(Food &food)
   block.y = foodPoint.y * block.h;
   SDL_RenderFillRect(sdl_renderer, &block);
   SDL_RenderPresent(sdl_renderer);
+}
+
+void Renderer::Render(Snake const snake) {
+  SDL_Rect block;
+  block.w = screen_width / grid_width;
+  block.h = screen_height / grid_height;
+
+  // Clear screen
+  SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
+  SDL_RenderClear(sdl_renderer);
+
+  // Render snake's body
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  for (SDL_Point const &point : snake.body) {
+    block.x = point.x * block.w;
+    block.y = point.y * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
+  }
+
+  // Render snake's head
+  block.x = static_cast<int>(snake.head_x) * block.w;
+  block.y = static_cast<int>(snake.head_y) * block.h;
+  if (snake.alive) {
+    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
+  } else {
+    SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
+  }
+  SDL_RenderFillRect(sdl_renderer, &block);
 }
 
 void Renderer::Render(Snake const snake, Food &food) {
@@ -110,12 +136,14 @@ void Renderer::Render(Snake const snake, Food &food) {
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+   std::string title{"GAME OVER !!!, Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
 
-void Renderer::GameOver(int score, int fps) {
-  std::string title{"GAME OVER !!!, Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+void Renderer::GameOver(int score, int remainingLifes) {
+  std::string title{"Snake Score: " + std::to_string(score) + " Remaining Snake's Lifes: " + std::to_string(remainingLifes)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 

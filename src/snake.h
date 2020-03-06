@@ -5,6 +5,7 @@
 #include <mutex>
 #include "SDL.h"
 #include "board.h"
+#include "food.h"
 
 class Snake {
  public:
@@ -24,10 +25,10 @@ class Snake {
   ~Snake();
   
   void AddLife();
-  void SetLifeCount();
+  int GetRemainingLifeCount();
   void SetBoard(Board *board_);   
   void ChangeDirection(Direction newDirection);
-  void Update();
+  void Update(Food &food);
   void IncrementSpeed(float value);
   void Die();
   void GrowBody();
@@ -45,17 +46,18 @@ class Snake {
   int maxLifeCount {5};
   int lifeCount {0};
   std::vector<SDL_Point> body;
-
+  int GetReward();
  private:
 
   
   Board *board;
-  void UpdateHead();
+  void UpdateHead(Food &food);
   void UpdateBody(SDL_Point &current_cell, SDL_Point &prev_cell);
-
+  void Eat(Food &food);
   bool growing{false};
   int grid_width;
   int grid_height;
+  int reward {0};
   mutable std::mutex mtx_;
 };
 

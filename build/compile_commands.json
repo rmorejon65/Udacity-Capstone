@@ -33,5 +33,10 @@
   "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
   "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/food.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/food.cpp",
   "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/food.cpp"
+},
+{
+  "directory": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build",
+  "command": "/usr/bin/c++   -I/usr/include/SDL2 -I/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src  -g   -std=c++17 -o CMakeFiles/SnakeGame.dir/src/snakecommand.cpp.o -c /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snakecommand.cpp",
+  "file": "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snakecommand.cpp"
 }
 ]

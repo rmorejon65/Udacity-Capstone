@@ -31,8 +31,7 @@ class Game {
 
   int score{0};
 
-  void PlaceFood();
-  void Update();
+  void Update(Renderer *renderer);
   bool HandleInput(Controller const &controller);
   void Render(Renderer *renderer);
   void RenderWindowTitle(Renderer);

@@ -116,14 +116,14 @@ void Snake::IncrementSpeed(float value) {
   speed += value;
 }
 
-void Snake::Update() {
+void Snake::Update(Food &food) {
   
-  std::cout << "update snake" << std::endl;
+  
   SDL_Point prev_cell{
       static_cast<int>(head_x),
       static_cast<int>(head_y)};  // We first capture the head's cell before updating.
 
-  UpdateHead();
+  UpdateHead(food);
 
   if (!GetIsAlive()){
       std::cout << "Snake die !!!" << std::endl;
@@ -141,6 +141,33 @@ void Snake::Update() {
     UpdateBody(current_cell, prev_cell);
   }
 }
+
+int Snake::GetReward() {
+  std::unique_lock<std::mutex> lck(mtx_);  
+  return reward;
+}
+
+void Snake::Eat(Food &food) {
+  reward = 0;
+  switch(food.GetFoodType())
+    {
+      case Food::FoodType::Poison:
+        Die();
+        break;
+      case Food::FoodType::Normal:
+        IncrementSpeed(0.001);
+        reward++;
+        GrowBody();
+        break;
+      case Food::FoodType::Plus:
+        IncrementSpeed(0.002);
+        reward+=2;
+        GrowBody();
+        break;
+    }
+    
+}
+
 bool Snake::GetIsAlive() {
   std::unique_lock<std::mutex> lck(mtx_);
   return alive;
@@ -151,8 +178,9 @@ void Snake::SetAlive(bool value) {
     alive = value;
 }
 
-void Snake::UpdateHead() {
-   std::unique_lock<std::mutex> lck(mtx_);  
+void Snake::UpdateHead(Food &food) {
+  std::unique_lock<std::mutex> lck(mtx_);  
+  reward = 0;
   switch (direction) {
     case Direction::kUp:
       head_y -= speed;
@@ -176,17 +204,34 @@ void Snake::UpdateHead() {
   head_y = fmod(head_y + grid_height, grid_height);
   int new_head_board_x = static_cast<int>(head_x);
   int new_head_board_y = static_cast<int>(head_y);
-  if (board->GetCellValue(new_head_board_x, new_head_board_y) == Board::CellContent::SnakeBody) {
-     lck.unlock();
-     Die();
+  switch(board->GetCellValue(new_head_board_x, new_head_board_y))
+  {
+    case Board::CellContent::SnakeBody:
+        lck.unlock();
+        Die();
+        break;
+    case Board::CellContent::FoodKind:
+        lck.unlock();
+        board->SetCellValue(new_head_board_x, new_head_board_y, Board::CellContent::SnakeHead);
+        Eat(food);
+        food.Place();
+        break;
+    case Board::CellContent::Empty:
+        board->SetCellValue(new_head_board_x, new_head_board_y, Board::CellContent::SnakeHead);
+        break;
   }
-  else
-     board->SetCellValue(new_head_board_y, new_head_board_y, Board::CellContent::SnakeHead);
+  
 }
+
+int Snake::GetRemainingLifeCount() {
+ std::unique_lock<std::mutex> lck(mtx_);  
+ return maxLifeCount - lifeCount;
+}
+
 
 void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) {
   // Add previous head location to vector
-   std::unique_lock<std::mutex> lck(mtx_);  
+  std::unique_lock<std::mutex> lck(mtx_);  
   board->SetCellValue(prev_head_cell.x, prev_head_cell.y, Board::CellContent::SnakeBody);
  
   body.push_back(prev_head_cell);
@@ -206,9 +251,7 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
 void Snake::Die(){
   std::unique_lock<std::mutex> lck(mtx_);  
   alive = false;
-  body.clear();
-  
-  std::cout << "Snake dying!!!!" << std::endl;
+  body.clear(); 
 }
 
 void Snake::GrowBody() { 

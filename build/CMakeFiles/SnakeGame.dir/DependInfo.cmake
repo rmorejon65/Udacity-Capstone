@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/main.cpp" "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build/CMakeFiles/SnakeGame.dir/src/main.cpp.o"
   "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/renderer.cpp" "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build/CMakeFiles/SnakeGame.dir/src/renderer.cpp.o"
   "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snake.cpp" "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build/CMakeFiles/SnakeGame.dir/src/snake.cpp.o"
+  "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/snakecommand.cpp" "/home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/build/CMakeFiles/SnakeGame.dir/src/snakecommand.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
