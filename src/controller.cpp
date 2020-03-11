@@ -33,17 +33,17 @@ void Controller::HandleInput(bool &running, Snake &snake)  const {
 /*          ChangeDirection(snake, Snake::Direction::kDown,
                           Snake::Direction::kUp); */
             {
-            SnakeCommand snakeCommand_ (&snake, Snake::Direction::kDown);
-            snakeCommand_.execute();
+              SnakeCommand snakeCommand_ (&snake, Snake::Direction::kDown);
+              snakeCommand_.execute();
             }
           break;
-
+ 
         case SDLK_LEFT:
 /*          ChangeDirection(snake, Snake::Direction::kLeft,
                           Snake::Direction::kRight); */
           {
-          SnakeCommand snakeCommand_(&snake, Snake::Direction::kLeft);
-          snakeCommand_.execute();
+            SnakeCommand snakeCommand_(&snake, Snake::Direction::kLeft);
+            snakeCommand_.execute();
           }
           break;
 
@@ -51,8 +51,8 @@ void Controller::HandleInput(bool &running, Snake &snake)  const {
 /*          ChangeDirection(snake, Snake::Direction::kRight,
                           Snake::Direction::kLeft); */
           {
-          SnakeCommand snakeCommand_(&snake, Snake::Direction::kRight);
-          snakeCommand_.execute();
+            SnakeCommand snakeCommand_(&snake, Snake::Direction::kRight);
+            snakeCommand_.execute();
           }
           break;
       }

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <memory>
 #include <thread>
+#include <condition_variable>
+#include <mutex>
+
 #include <future>
 #include "SDL.h"
 #include "board.h"
@@ -30,6 +33,8 @@ bool Game::HandleInput(Controller const &controller) {
 }
 
 void Game::Render(Renderer *renderer) {
+  //std::unique_lock<std::mutex> lck(mtx);
+  //cv.wait(lck);
   renderer->Render(snake);
   renderer->Render(food);
 }
@@ -79,20 +84,24 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 }
 
 void Game::Update(Renderer *renderer) {
+  
   if (!snake.GetIsAlive()) 
       return;
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
   snake.Update(food);
   score += snake.GetReward();
+  //cv.notify_one();
   if (!snake.GetIsAlive()) {
     board->Clear();   
     snake.AddLife();  
     renderer->GameOver(score, snake.GetRemainingLifeCount());
     score = 0;
+    
     food.Place();
   }
   else
     food.CheckExpired();  
+  
 }
 
 int Game::GetScore() const { return score; }

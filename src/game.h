@@ -3,6 +3,8 @@
 
 #include <random>
 #include <memory>
+#include <condition_variable>
+#include <mutex>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -35,6 +37,10 @@ class Game {
   bool HandleInput(Controller const &controller);
   void Render(Renderer *renderer);
   void RenderWindowTitle(Renderer);
+
+  std::condition_variable cv;
+
+  std::mutex mtx;
   
 };
 

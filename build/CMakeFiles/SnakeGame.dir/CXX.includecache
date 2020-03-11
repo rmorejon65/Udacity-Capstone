@@ -49,6 +49,10 @@ memory
 -
 thread
 -
+condition_variable
+-
+mutex
+-
 future
 -
 SDL.h
@@ -64,6 +68,10 @@ snake.h
 random
 -
 memory
+-
+condition_variable
+-
+mutex
 -
 SDL.h
 /home/parallels/Development/C++/CppND-Capstone-Snake-Game-master/src/SDL.h
