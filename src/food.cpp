@@ -62,7 +62,7 @@ void Food::Place() {
        continue;
 
     if (board->GetCellValue(x,y) == Board::CellContent::Empty) {
-      std::cout << "Found Empty Cell For FOOD" << std::endl;
+
       Food::FoodType previous = foodType;
       while (previous == foodType)
             foodType = static_cast<FoodType>(random_food(engine));
@@ -73,7 +73,7 @@ void Food::Place() {
       board->SetCellValue(x,y,Board::CellContent::FoodKind);
       board->SetCellValue(previous_x, previous_y, Board::CellContent::Empty);
       lastTimePlaced = std::chrono::steady_clock::now() ;
-      std::cout << "Food Placed " << std::endl;
+
       return;
     }
   }    

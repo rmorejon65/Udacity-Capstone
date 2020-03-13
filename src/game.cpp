@@ -44,8 +44,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  std::cout << "Head x = " << snake.head_x << std::endl;
-  std::cout << "Head y = " <<snake.head_y << std::endl;
+  
   running = true;
   
   while (true) {
