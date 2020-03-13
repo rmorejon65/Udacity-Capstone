@@ -83,7 +83,6 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     }
     barrier_future.get();
     std::unique_lock<std::mutex> lck(mtx);
-    
     cv.wait_until(lck, std::chrono::system_clock::now() + std::chrono::milliseconds(10),  [this]() {  return running == false; } );
     if (!running) {
         return;
