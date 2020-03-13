@@ -12,29 +12,27 @@
 #include "snake.h"
 
 
-Game::Game(std::size_t grid_width, std::size_t grid_height) :snake(grid_width, grid_height),food(grid_width, grid_height),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width)),
-      random_h(0, static_cast<int>(grid_height)) {
-  
+Game::Game(std::size_t grid_width, std::size_t grid_height) :food(grid_width, grid_height)
+{
   board = std::make_unique<Board>(grid_width, grid_height);
-  snake.SetBoard(board.get());
+  //snake.SetBoard(board.get());
   food.SetBoard(board.get());
   food.SetExpirationTime(10);
-
   food.Place();
-
 }
 
-bool Game::HandleInput(Controller const &controller) {
-  bool running = true;
+void Game::SetSnake(Snake _snake){
+  snake = std::move(_snake);
+  snake.SetBoard(board.get());
+}
+
+void Game::HandleInput(std::promise<void> &&barrier, Controller const &controller, Renderer *renderer) {
   controller.HandleInput(running, snake);
-  return running;
+  barrier.set_value();
+  cv.notify_all();
 }
 
 void Game::Render(Renderer *renderer) {
-  //std::unique_lock<std::mutex> lck(mtx);
-  //cv.wait(lck);
   renderer->Render(snake);
   renderer->Render(food);
 }
@@ -46,14 +44,21 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  bool running = true;
+  std::cout << "Head x = " << snake.head_x << std::endl;
+  std::cout << "Head y = " <<snake.head_y << std::endl;
+  running = true;
   
-  while (running) {
+  while (true) {
     frame_start = SDL_GetTicks();
-    auto handle_input = std::async(std::launch::async, &Game::HandleInput, this, controller);
-    running = handle_input.get();
+    std::promise<void> barrier;
+    std::future<void> barrier_future = barrier.get_future();
+    std::thread handle_input_thread(&Game::HandleInput,  this, std::move(barrier), controller, &renderer);
+    barrier_future.wait();
+    handle_input_thread.join();
+    //auto handle_input = std::async(std::launch::async, &Game::HandleInput, this, controller, &renderer);
     auto handle_update = std::async(std::launch::async, &Game::Update, this, &renderer);
     auto handle_render = std::async(std::launch::async, &Game::Render, this, &renderer);
+    
     
     frame_end = SDL_GetTicks();
 
@@ -61,7 +66,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
-
+  
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
       renderer.UpdateWindowTitle(score, frame_count);
@@ -76,15 +81,18 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     if (frame_duration < target_frame_duration) {
       SDL_Delay(target_frame_duration - frame_duration);
     }
+    barrier_future.get();
+    std::unique_lock<std::mutex> lck(mtx);
     
+    cv.wait_until(lck, std::chrono::system_clock::now() + std::chrono::milliseconds(10),  [this]() {  return running == false; } );
+    if (!running) {
+        return;
+    }
     handle_update.get();
-    handle_render.get();
- 
-  }
+    handle_render.get();  }
 }
 
 void Game::Update(Renderer *renderer) {
-  
   if (!snake.GetIsAlive()) 
       return;
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -101,7 +109,6 @@ void Game::Update(Renderer *renderer) {
   }
   else
     food.CheckExpired();  
-  
 }
 
 int Game::GetScore() const { return score; }

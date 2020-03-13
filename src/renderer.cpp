@@ -136,13 +136,13 @@ void Renderer::Render(Snake const snake, Food &food) {
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
-   std::string title{"GAME OVER !!!, Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
-
+  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
 
 void Renderer::GameOver(int score, int remainingLifes) {
-  std::string title{"Snake Score: " + std::to_string(score) + " Remaining Snake's Lifes: " + std::to_string(remainingLifes)};
+   std::string title{"GAME OVER !!!, Snake Score: " + std::to_string(score) + " Remaining Snake's Lifes: " + std::to_string(remainingLifes)};
+  
   SDL_SetWindowTitle(sdl_window, title.c_str());
   std::this_thread::sleep_for(std::chrono::seconds(5));
 }

@@ -3,8 +3,10 @@
 
 #include <random>
 #include <memory>
+#include <future>
 #include <condition_variable>
 #include <mutex>
+#include <atomic>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -19,12 +21,13 @@ class Game {
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
-  
+  void SetSnake(Snake _snake);
  private:
   Snake snake;
   Food food;
   //SDL_Point food;
   std::unique_ptr<Board> board;
+  bool running;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -34,7 +37,7 @@ class Game {
   int score{0};
 
   void Update(Renderer *renderer);
-  bool HandleInput(Controller const &controller);
+  void HandleInput(std::promise<void> &&barrier, Controller const &controller, Renderer *renderer);
   void Render(Renderer *renderer);
   void RenderWindowTitle(Renderer);
 

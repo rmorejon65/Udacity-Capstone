@@ -16,7 +16,7 @@ class Snake {
         grid_height(grid_height),
         head_x(grid_width / 2),
         head_y(grid_height / 2) {}
-
+  Snake() {}
   Snake(Board *board_);
   Snake(const Snake &source);
   Snake &operator=(const Snake &source); 

@@ -11,9 +11,12 @@ Snake::Snake(Board *board_): grid_width(board_->width),
 
 Snake::Snake(const Snake &source)
 {
+    //std::cout << "Snake Copy Constructor" << std::endl;  
     std::unique_lock<std::mutex> lck(mtx_);
     std::unique_lock<std::mutex> lck_src(source.mtx_);
     speed = source.speed;
+    grid_height = source.grid_height;
+    grid_width = source.grid_width;
     size = source.size;
     alive = source.alive;
     head_x = source.head_x;
@@ -29,8 +32,11 @@ Snake::~Snake() {
 
 Snake::Snake(Snake &&source)
 {
+    //std::cout << "Snake Move Constructor" << std::endl;
     std::unique_lock<std::mutex> lck(mtx_);
     std::unique_lock<std::mutex> lck_src(source.mtx_);
+    grid_height = source.grid_height;
+    grid_width = source.grid_width;
     speed = source.speed;
     size = source.size;
     alive = source.alive;
@@ -46,9 +52,11 @@ Snake &Snake::operator=(const Snake &source)
 {
   	if (this == &source)
         return *this;
-
+    //std::cout << "Snake Assignment Copy Operator" << std::endl;   
     std::unique_lock<std::mutex> lck(mtx_);
     std::unique_lock<std::mutex> lck_src(source.mtx_);
+    grid_height = source.grid_height;
+    grid_width = source.grid_width;
     speed = source.speed;
     size = source.size;
     alive = source.alive;
@@ -60,14 +68,16 @@ Snake &Snake::operator=(const Snake &source)
     return *this;
 }
 
-//// EOF STUDENT CODE
+
 Snake &Snake::operator=(Snake &&source)
 { 
-    
+    //std::cout << "Snake Assignment Move Operator" << std::endl; 
     if (this == &source)
       return *this;
     std::unique_lock<std::mutex> lck(mtx_);
     std::unique_lock<std::mutex> lck_src(source.mtx_);
+    grid_height = source.grid_height;
+    grid_width = source.grid_width;
     speed = source.speed;
     size = source.size;
     alive = source.alive;

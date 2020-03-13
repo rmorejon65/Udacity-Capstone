@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
@@ -12,8 +13,11 @@ int main() {
   constexpr std::size_t kGridHeight{32};
 
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
+  
   Controller controller;
   Game game(kGridWidth, kGridHeight);
+  Snake snake(kGridWidth, kGridHeight);
+  game.SetSnake(std::move(snake));
   game.Run(controller, renderer, kMsPerFrame);
   std::cout << "Game has terminated successfully!\n";
   std::cout << "Score: " << game.GetScore() << "\n";
